@@ -1,0 +1,251 @@
+<!Doctype html>
+<html>
+<head>
+<title>Focusable Element</title>
+		
+<style>
+	.container{margin:auto;}
+	.container label{font-family:calibri;font-size:14px;color:#333;}
+	h1,h2,h3,h4,h5,h6{font-family:calibri;}
+	label{display:block;padding:20px;}
+	
+
+.modal-content-large {width:720px;height:auto;}
+.modal-header{position:absolute;}
+.modal-footer-text{text-align:center;margin:5px 0 20px;}
+.modal {
+display: none;
+position: fixed;
+z-index: 1090;
+/* padding-top: 100px; */
+left: 0;
+top: 0;
+width: 100%;
+height: 100%;
+overflow: auto;
+background-color: rgb(0,0,0);
+background-color: rgba(0,0,0,0.7);
+}
+
+
+.modal-content {
+position: relative;
+background-color: #FFFFFF;
+margin: auto;
+padding: 0;
+border: 1px solid #ccc;
+border-radius: 4px;
+width: 620px;
+height: 382px;
+box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+-webkit-animation-name: fadein;
+-webkit-animation-duration: 0.5s;
+animation-name: fadein;
+animation-duration: 0.5s;
+}
+.modal-header {
+position: absolute;
+}
+.loginModal {
+text-align: center;
+color: #666;
+}
+.login-auth-button {
+margin: 0!important;
+}
+.top-traingle {
+width: 0px;
+width: 0;
+height: 0;
+float: right;
+border-top: 50px solid #F2F2F2;
+border-left: 60px solid transparent;
+margin: 2px 2px 0 0;
+position: relative;
+left: 558px;
+}
+.close {
+float: right;
+font-size: 28px !important;
+font-weight: bold;
+color: #0574AC;
+padding: 3px 5px 0 0;
+position: relative;
+top: -50px;
+right: 0;
+margin: 3px;
+border: 0;
+background: transparent;
+}
+.hidden-spoken {
+position: absolute !important;
+clip: rect(1px 1px 1px 1px);
+clip: rect(1px, 1px, 1px, 1px);
+padding: 0 !important;
+border: 0 !important;
+height: 1px !important;
+width: 1px !important;
+}
+.container {
+margin: auto;
+}
+.modal-content {
+height: auto;
+}
+</style>
+</head>
+<body>
+<button class="bttn bttn-primary" type="button" id="eLogin">Open Modal</button>
+
+
+<!-- The Modal -->
+			<div id="loginModal" class="modal" aria-dialog="Login Modal" tabindex="0" role="modal">
+			<!-- Modal content -->
+				<div class="modal-content">
+					<div class="modal-header" >
+						<div class="top-traingle">
+							<button class="close" role="button" alt="close" id="mClose" >
+								<span aria-hidden="true">×</span> 
+								<span class="hidden-spoken">Close the modal</span>
+							</button>
+						</div>
+					</div>
+					<div class="clearDiv"></div>
+					<div class="modal-body loginModal login-auth-button">
+ <div class="clearDiv"></div>
+ 
+						<div class="container">	
+						<a href="#">This is Link</a>
+	<h1 tabindex="0">This is H1 Tag</h1>
+	<h2 tabindex="0">This is H2 Tag</h2>
+	<h3 tabindex="0">This is H3 Tag</h3>
+	<h4 tabindex="0">This is H4 Tag</h4>
+	<h5 tabindex="0">This is H5 Tag</h5>
+	<h6 tabindex="0">This is H6 Tag</h6>
+	<label>Input Tag : <input type="text" name="inputTag" value=""/></label>
+	<label>Text Area Tag : <textarea name="textareaTag"></textarea></label>
+	<label>Select Tag : <select name="selectTag"><option value="">Select Option Here</option></select>
+	<button type="button" onclick="checkElem();">Button</button><br/>
+	<a href="#">This is Link</a>
+	
+</div>
+						<div class="modal-footer">    
+					</div>
+				</div>
+
+			</div>
+</div>
+			<script>
+// Get the modal
+var modal = document.getElementById('loginModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("eLogin");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+//height of screen visibile area
+function vScreenHeight(){
+   return window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight||0;
+}
+
+var elemObj=[];
+var activeModel=document.getElementsByClassName("modal")[0];
+var lastObjLen;
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+    var viewportH=vScreenHeight()/4+"px";
+    modal.style.display = "block";
+	modal.style.paddingTop ="0px";
+	document.getElementsByClassName("modal")[0].focus();
+	var nodeObj= activeModel.querySelectorAll("*");//document.activeElement;
+	var activeElemObj=["BUTTON","H1", "H2", "H3", "H4", "H5", "H6","LABEL","INPUT","TEXTAREA","SELECT","A"];
+	var i;
+	for (i = 0; i < nodeObj.length; i++) 
+	{
+		if(activeElemObj.indexOf(nodeObj[i].tagName)>-1){
+			elemObj.push(nodeObj[i].tagName);
+		}
+	}
+	lastObjLen=activeModel.querySelectorAll(elemObj[elemObj.length - 1]).length;
+	activeModel.getElementsByTagName(elemObj[elemObj.length - 1])[lastObjLen-1].setAttribute("data-focus", "cycle");
+	activeModel.getElementsByTagName(elemObj[0])[0].setAttribute("data-focus", "revCycle");
+}
+
+var focusCyclicFromFirstElement=function() {
+	var currElm=document.activeElement.tagName;	
+	alert(currElm+"=="+elemObj[0]);
+	//console.log("current elem-"+ currElm +" array last elm-"+elemObj[elemObj.length - 1] +" attribute-"+document.activeElement.getAttribute("data-focus"));
+	if((currElm==elemObj[0])&& document.activeElement.getAttribute("data-focus")=='revCycle'){
+	alert(activeModel.getElementsByTagName(elemObj[elemObj.length - 1])[lastObjLen-1]);
+	activeModel.getElementsByTagName(elemObj[elemObj.length - 1])[lastObjLen-1].focus();
+	}
+	
+}
+
+var focusCyclicFromLastElement=function() {
+	var currElm=document.activeElement.tagName;	
+	//console.log("current elem-"+ currElm +" array last elm-"+elemObj[elemObj.length - 1] +" attribute-"+document.activeElement.getAttribute("data-focus"));
+	if((currElm==elemObj[elemObj.length - 1])&& document.activeElement.getAttribute("data-focus")=='cycle'){
+	activeModel.focus();
+	}
+	
+}
+
+
+
+document.onkeydown = function(evt) {
+evt = evt || window.event;
+
+var isTab = false;
+var isShift=false;
+if ("key" in evt) { isTab = evt.key == "Horizontal Tab";} else {isTab = evt.keyCode == 9;}
+if ("key" in evt) { isShift = evt.key == "Shift In";} else {isShift = evt.keyCode == 16;}
+if(isTab){focusCyclicFromLastElement();}
+console.log("i am on "+isShift);
+if(isShift){
+console.log("1");
+	document.onkeyup = function(evt) {
+	console.log("2"+isShift);
+			evt = evt || window.event;
+			var isShiftTab = false;
+			if ("key" in evt) { isShiftTab = evt.key == "Horizontal Tab";} else {isShiftTab = evt.keyCode == 9;}
+		if(isShiftTab){console.log("3"+isShiftTab+"--"+isShift);focusCyclicFromFirstElement();}
+		isShift=false;
+		isShiftTab=false;
+		
+		}
+		
+		
+}
+
+console.log(isShift+"--"+"--"+isTab)
+};
+document.onkeyup = function(evt) {
+evt = evt || window.event;
+var isEscape = false;
+//var isTab = false;
+if ("key" in evt) { isEscape = evt.key == "Escape";} else {isEscape = evt.keyCode == 27;}
+if (isEscape) {modal.style.display = "none";}
+//if ("key" in evt) { isTab = evt.key == "Tab";} else {isTab = evt.keyCode == 9;}
+//if(isTab){console.log(document.activeElement.tagName);}
+
+};
+
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+</body>
+</html>
