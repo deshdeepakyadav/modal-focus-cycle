@@ -175,11 +175,9 @@ btn.onclick = function() {
 
 var focusCyclicFromFirstElement=function() {
 	var currElm=document.activeElement.tagName;	
-	alert(currElm+"=="+elemObj[0]);
-	//console.log("current elem-"+ currElm +" array last elm-"+elemObj[elemObj.length - 1] +" attribute-"+document.activeElement.getAttribute("data-focus"));
 	if((currElm==elemObj[0])&& document.activeElement.getAttribute("data-focus")=='revCycle'){
-	alert(activeModel.getElementsByTagName(elemObj[elemObj.length - 1])[lastObjLen-1]);
-	activeModel.getElementsByTagName(elemObj[elemObj.length - 1])[lastObjLen-1].focus();
+	console.log(elemObj[elemObj.length - 1]+"["+(lastObjLen-1)+"]");
+	activeModel.getAttribute("data-focus").focus();
 	}
 	
 }
@@ -201,26 +199,13 @@ evt = evt || window.event;
 var isTab = false;
 var isShift=false;
 if ("key" in evt) { isTab = evt.key == "Horizontal Tab";} else {isTab = evt.keyCode == 9;}
-if ("key" in evt) { isShift = evt.key == "Shift In";} else {isShift = evt.keyCode == 16;}
 if(isTab){focusCyclicFromLastElement();}
-console.log("i am on "+isShift);
-if(isShift){
-console.log("1");
-	document.onkeyup = function(evt) {
-	console.log("2"+isShift);
-			evt = evt || window.event;
-			var isShiftTab = false;
-			if ("key" in evt) { isShiftTab = evt.key == "Horizontal Tab";} else {isShiftTab = evt.keyCode == 9;}
-		if(isShiftTab){console.log("3"+isShiftTab+"--"+isShift);focusCyclicFromFirstElement();}
-		isShift=false;
-		isShiftTab=false;
-		
-		}
-		
-		
+
+if(event.shiftKey && event.keyCode == 9) { 
+  //shift was down when tab was pressed
+  focusCyclicFromFirstElement();
 }
 
-console.log(isShift+"--"+"--"+isTab)
 };
 document.onkeyup = function(evt) {
 evt = evt || window.event;
