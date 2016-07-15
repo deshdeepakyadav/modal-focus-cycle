@@ -20,7 +20,7 @@
 </style>
 </head>
 <body>
-<button class="bttn bttn-primary" type="button" id="eLogin" data-target="#myModal1small" data-toggle="modal" >Open Modal</button>
+<button class="bttn bttn-primary" type="button" id="eLogin" data-target="#loginModal" data-toggle="modal" >Open Modal</button>
 
 <!-- The Modal -->
 			<div id="loginModal" class="modal" aria-dialog="Login Modal" tabindex="0" role="modal">
@@ -28,7 +28,7 @@
 				<div class="modal-content">
 					<div class="modal-header" >
 						<div class="top-traingle">
-							<button class="close" role="button" alt="close" id="mClose" >
+							<button class="close" role="button" alt="close" id="mClose" data-dismiss="modal">
 								<span aria-hidden="true">×</span> 
 								<span class="hidden-spoken">Close the modal</span>
 							</button>
@@ -45,69 +45,83 @@
 							<h4 tabindex="0">This is H4 Tag</h4>
 							<h5 tabindex="0">This is H5 Tag</h5>
 							<h6 tabindex="0">This is H6 Tag</h6>
-							<label>Input Tag : <input type="text" name="inputTag" value=""/></label>
+							<label>Input Tag : <input type="text" name="inputTag" value="" /></label>
 							<label>Text Area Tag : <textarea name="textareaTag"></textarea></label>
 							<label>Select Tag : <select name="selectTag"><option value="">Select Option Here</option></select></label>
-							<button type="button">Button</button><br/>
+							<button type="button" disabled>Button</button><br/>
 	
 						</div>
 						<div class="modal-footer">  
-							<a href="#" tabindex="0">This is Link</a>						
+							<a href="#" >This is Link</a>						
 						</div>
+						
+						
 					</div>
 
 				</div>
 			</div>
 			<script>
 
-// Get the button that opens the modal
-var btn = document.getElementById("eLogin");
+			
+			
+			
+// Global Varaible used for modal tab focus order
+var modal;
+var elemObj=[];
+var lastObjLen=0;
+var activeElemObj=["BUTTON","INPUT","TEXTAREA","SELECT","A","AREA","IFRAME"];
+var focusCycleEnabledOn="data-focus";
+var focusCycleElemValFirst="cycle";
+var focusCycleElemValLast="revCycle";	
+		
+document.onclick=function(evt){
 
-// Get the modal
-var modal = document.getElementById('loginModal');
+							if(document.activeElement.getAttribute("data-target")!=null)
+							{
+								var btn = document.activeElement;
+								var modelId=btn.getAttribute("data-target").replace("#","");
+								modal = document.getElementById(modelId);
+								setModalPosition(modal);
+								modalShow(modal);
+							}
+							else if((document.activeElement.getAttribute("data-dismiss")!=null)||(event.target==modal))
+								{
+									modalHide();
+								}
+							}
 
-// Get the <span> element that closes the modal
-var CloseIcon = document.getElementsByClassName("close")[0];
+
 
 //height of screen visibile area
-var setModalPosition= function(){
+var setModalPosition= function(modal){
 								var vHeight= window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight||0;
 								var viewportH=vHeight/8+"px";
 								modal.style.display = "block";
 								modal.style.paddingTop ="0px";
 								}
 
-// Global Varaible used for modal tab focus order
-var elemObj=[];
-var lastObjLen;
 
 
-
-// When the user clicks the button, open the modal 
-btn.onclick = function() {
-    setModalPosition();
-	modalShow();
-	
-}
-
-var modalShow=	function() {
+var modalShow=	function(modal) {
 								modal.focus();
-								var nodeObj= modal.querySelectorAll("*");
-								var activeElemObj=["BUTTON","H1", "H2", "H3", "H4", "H5", "H6","LABEL","INPUT","TEXTAREA","SELECT","A"];
+								var nodeObj= modal.querySelectorAll("*:not([tabindex='-1']):not([disabled])");
+								var tabObj= modal.querySelectorAll('[tabindex="0"]');								
 								for (var i = 0; i < nodeObj.length; i++) 
 								{
-									if(activeElemObj.indexOf(nodeObj[i].tagName)>-1)
+									if((activeElemObj.indexOf(nodeObj[i].tagName)>-1)||(nodeObj[i].getAttribute('tabindex')=='0'))
 									{
 										elemObj.push(nodeObj[i].tagName);
 									}
 								}
+								console.log(elemObj);
 								lastObjLen=modal.querySelectorAll(elemObj[elemObj.length - 1]).length;
-								modal.getElementsByTagName(elemObj[elemObj.length - 1])[lastObjLen-1].setAttribute("data-focus", "cycle");
-								modal.getElementsByTagName(elemObj[0])[0].setAttribute("data-focus", "revCycle");
+								modal.getElementsByTagName(elemObj[elemObj.length - 1])[lastObjLen-1].setAttribute(focusCycleEnabledOn, focusCycleElemValFirst);
+								modal.getElementsByTagName(elemObj[0])[0].setAttribute(focusCycleEnabledOn, focusCycleElemValLast);
 							};
 
 
 var modalHide=function(){
+							 elemObj=[];
 							 modal.style.display = "none";
 						};
 
@@ -115,7 +129,7 @@ var modalHide=function(){
 var focusOnNextElement=function(event) {
 											var currElm=document.activeElement.tagName;
 											
-											if((currElm==elemObj[elemObj.length - 1])&& document.activeElement.getAttribute("data-focus")=='cycle')
+											if((currElm==elemObj[elemObj.length - 1])&& document.activeElement.getAttribute(focusCycleEnabledOn)==focusCycleElemValFirst)
 												{
 													event.preventDefault();
 													modal.getElementsByTagName(elemObj[0])[0].focus();
@@ -127,9 +141,9 @@ var focusOnNextElement=function(event) {
 						
 var focusOnPreviousElement=function(event) {
 											var currElm=document.activeElement.tagName;	
-											if((currElm==elemObj[0])&& document.activeElement.getAttribute("data-focus")=='revCycle')
+											if((currElm==elemObj[0])&& document.activeElement.getAttribute(focusCycleEnabledOn)==focusCycleElemValLast)
 												{
-													var elemFocus = document.querySelectorAll('[data-focus="cycle"]');
+													var elemFocus = document.querySelectorAll('['+focusCycleEnabledOn+'='+focusCycleElemValFirst+']');
 													event.preventDefault();
 													modal.getElementsByTagName(elemObj[elemObj.length - 1])[lastObjLen-1].focus();
 												}
@@ -148,18 +162,8 @@ document.onkeydown = function(event) {
 
 
 
-// When the user clicks on Close icon <span> (x), close the modal
-CloseIcon.onclick = function() {   
-									modalHide();
-							   };
 
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-									if (event.target == modal) 
-									{ 
-										modalHide();    
-									}
-								 };
+
 /*
 Improvement Required :
 1. Mozilla functioning - working fine after passing "event" in functions;
